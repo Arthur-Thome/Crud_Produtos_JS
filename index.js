@@ -70,12 +70,29 @@ app.post('/produtos', async (req, res) => {
   res.status(201).json(produtoInserido);
 })
 
-app.put('/produtos/:id', (req, res) => {
+app.put('/produtos/:id', async (req, res) => {
   const id = req.params.id;
   const produto = req.body;
-  console.log(produto);
 
-  res.json(produtos[0]);
+  if (!produto || !produto.nome ||!produto.categoria || !produto.preco){
+    res.status(400).json({erro: "Informações de produto incompletas!"});
+  }
+
+  else{
+    const client = new Client(conexao);
+    await client.connect();
+    const result = await client.query(`UPDATE PRODUTOS SET nome=$1, categoria=$2, preco=$3 WHERE id=$4 RETURNING *`, [produto.nome, produto.categoria, produto.preco, id]);
+    // const lista_produtos_id = result.rows;
+    const produtoAtualizado  = result.rows[0];
+    await client.end();
+  }
+
+  if(produtoAtualizado){
+    res.json(produtoAtualizado);
+  }
+  else{
+    res.status(404).json({erro: "Produto não encontrado"});
+  }
 })
 
 app.delete('/produtos/:id', (req, res) => {
