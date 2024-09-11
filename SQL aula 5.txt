@@ -1,7 +1,21 @@
-select * from produtos
+-- Cria a tabela produtos com as colunas especificadas
+CREATE TABLE IF NOT EXISTS produtos (
+    ID SERIAL PRIMARY KEY,
+    nome VARCHAR(30) NOT NULL,
+    categoria VARCHAR(30) NOT NULL,
+    preco DECIMAL(10, 2) NOT NULL
+);
 
-insert into produtos (nome, categoria, preco) values ('Macarrão', 'Alimento', 8.3)
-insert into produtos (nome, categoria, preco) values ('Cerveja', 'Bebida', 15.90)
+-- Insere os registros na tabela produtos
+INSERT INTO produtos (nome, categoria, preco) VALUES ('Macarrão', 'Alimento', 8.30);
+INSERT INTO produtos (nome, categoria, preco) VALUES ('Cerveja', 'Bebida', 15.90);
+INSERT INTO produtos (nome, categoria, preco) VALUES ('Feijão', 'Alimento', 5.90);
+INSERT INTO produtos (nome, categoria, preco) VALUES ('Refrigerante', 'Bebida', 8.50);
+INSERT INTO produtos (nome, categoria, preco) VALUES ('Suco', 'Bebida', 1.77);
+INSERT INTO produtos (nome, categoria, preco) VALUES ('Lasanha', 'Alimento', 12.35);
+
+
+select * from produtos
 returning * --retorna o produto completo com id gerado pelo banco
 
 update produtos set nome='massa', categoria='Alimento', preco='3.5' where id=4 returning *
