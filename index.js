@@ -95,10 +95,25 @@ app.put('/produtos/:id', async (req, res) => {
   }
 })
 
-app.delete('/produtos/:id', (req, res) => {
+app.delete('/produtos/:id', async (req, res) => {
   const id = req.params.id;
 
-  res.json(produtos[0]);
+  const client = new Client(conexao);
+  await client.connect();
+  const result = await client.query(
+    "DELETE FROM PRODUTOS WHERE id=$1 RETURNING *", [id]
+  );
+  const produtoDeletado = result.rows[0];
+  await client.end();
+
+  if (produtoDeletado) {
+    res.json(produtoDeletado);
+  }
+  else {
+    res.status(404)
+      .json({ erro: "Produto nao encontrado" });
+  }
+
 })
 
 
